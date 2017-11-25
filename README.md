@@ -1,2 +1,2 @@
 # gadka-szmatka
-Chat application for bots and people based on django channels with chatbot scenarios modeling capabilities.
+gadka_szmatka application for bots and people based on django channels with gadka_szmatkabot scenarios modeling capabilities.

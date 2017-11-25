@@ -1,0 +1,22 @@
+{% extends 'gadka_szmatka/base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <script src="{% static 'channels/js/websocketbridge.js' %}"></script>
+  <script>
+    const webSocketBridge = new channels.WebSocketBridge();
+    webSocketBridge.connect('/conversation/{{ conversation_id }}/');
+  </script>
+
+  {% include 'messaging/conversations_list.html' %}
+
+  {{ kwargs.id }}
+
+  {% for message in messages %}
+
+    {{ message.text }}
+
+  {% endfor %}
+
+{% endblock %}

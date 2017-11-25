@@ -1,7 +1,12 @@
-from channels.generic.websockets import WebsocketConsumer
+import json
+
+from channels.generic.websockets import JsonWebsocketConsumer
+from channels import Group
+
+from .models import Conversation, Message
 
 
-class ConversationConsumer(WebsocketConsumer):
+class ConversationConsumer(JsonWebsocketConsumer):
 
     http_user = True
 
@@ -9,10 +14,43 @@ class ConversationConsumer(WebsocketConsumer):
         return []
 
     def connect(self, message, **kwargs):
-        self.message.reply_channel.send({"accept": True})
+        conversation_id = kwargs['id']
 
-    def receive(self, text=None, bytes=None, **kwargs):
-        self.send(text=text, bytes=bytes)
+        try:
+            conversation = Conversation.objects.get(id=conversation_id)
+        except Conversation.DoesNotExist:
+            return self._close_connection(message)
+
+        if message.user not in conversation.users.all():
+            return self._close_connection(message)
+
+        self.message.reply_channel.send({'accept': True})
+
+        Group(f'conversation_{conversation_id}').add(message.reply_channel)
+
+        message.channel_session['conversation_id'] = conversation_id
+
+    def receive(self, content, **kwargs):
+        conversation_id = kwargs['id']
+
+        if 'message' not in content:
+            return
+
+        message = Message.objects.create(
+            author=self.message.user,
+            conversation_id=conversation_id,
+            text=content['message'],
+        )
+
+        Group(f'conversation_{conversation_id}').send({
+            'text': json.dumps({'message': message.text,
+                                'author': str(message.author)})
+        })
 
     def disconnect(self, message, **kwargs):
-        pass
+        conversation_id = kwargs['id']
+
+        Group(f'conversation_{conversation_id}').discard(message.reply_channel)
+
+    def _close_connection(self, message):
+        message.reply_channel.send({'close': True})

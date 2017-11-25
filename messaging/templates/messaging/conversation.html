@@ -3,20 +3,31 @@
 
 {% block content %}
 
+  <div id="messages">
+    {% for message in messages %}
+      {{ message.text }}<br>
+    {% endfor %}
+  </div>
+
+  <input id="text" type="text">
+  <button id="send">Send</button>
+
   <script src="{% static 'channels/js/websocketbridge.js' %}"></script>
   <script>
+
     const webSocketBridge = new channels.WebSocketBridge();
     webSocketBridge.connect('/conversation/{{ conversation_id }}/');
+
+    webSocketBridge.listen(function(action, stream) {
+      var messages = document.getElementById("messages");
+      messages.innerHTML += action["message"] + "<br>";
+    });
+
+    document.getElementById("send").addEventListener("click", function() {
+      var message = document.getElementById("text").value
+      webSocketBridge.send({message: message});
+    });
+
   </script>
-
-  {% include 'messaging/conversations_list.html' %}
-
-  {{ kwargs.id }}
-
-  {% for message in messages %}
-
-    {{ message.text }}
-
-  {% endfor %}
 
 {% endblock %}

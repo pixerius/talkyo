@@ -17,7 +17,7 @@ class Conversation(models.Model):
 class Message(models.Model):
     class Meta:
         default_related_name = 'messages'
-        ordering = ['-timestamp']
+        ordering = ['timestamp']
 
     author = models.ForeignKey('users.User', models.CASCADE,
                                related_name='messages')

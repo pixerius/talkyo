@@ -39,8 +39,9 @@ class ConversationStartView(View):
         if user_id:
             user = get_object_or_404(User, id=user_id)
 
-            conversation = conversations.filter(users_count=2) \
-                .filter(users=request.user).filter(users=user).first()
+            conversation = conversations.filter(
+                users_count=2, users=request.user
+            ).filter(users=user).first()
 
             if not conversation:
                 conversation = Conversation()

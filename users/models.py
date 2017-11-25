@@ -51,7 +51,8 @@ class User(AbstractBaseUser):
         return self.email
 
     def __str__(self):
-        return self.email
+        name, _ = self.email.split('@')
+        return name
 
     def has_perm(self, perm, obj=None):
         return True

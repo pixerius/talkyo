@@ -1,0 +1,27 @@
+{% extends 'gadka_szmatka/base.html' %}
+{% load conversation_entry %}
+
+{% block content %}
+<div class="container">
+  {% if request.user.conversations.first %}
+    <div class="card-columns mt-sm-3">
+      {% for conversation in request.user.conversations.all %}
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">{% conversation_entry conversation %}</h4>
+            {% if conversation.messages.first %}
+              <h6 class="card-subtitle mb-2 text-muted">{{ conversation.messages.first.author }}: {{ conversation.messages.first.text }}</h6>
+            {% endif %}
+            <a href="{% url 'messaging:conversation' conversation_id=conversation.id %}" class="card-link">Go to conversation</a>
+            <a href="{% url 'messaging:conversation-leave' conversation_id=conversation.id %}" class="card-link text-danger">Leave</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-light mt-sm-3" role="alert">
+      Your conversations list is empty. Start a conversation with <a href="{% url 'users:list' %}" class="alert-link">a friend</a> or <a href="{% url 'bots:list' %}" class="alert-link">a bot</a>.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

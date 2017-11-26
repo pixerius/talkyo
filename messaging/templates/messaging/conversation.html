@@ -1,5 +1,5 @@
 {% extends 'gadka_szmatka/base.html' %}
-{% load conversation_entry %}
+{% load conversation_entry static %}
 
 {% block content %}
 <div class="container-fluid" style="height: calc(100% - 56px);">
@@ -13,11 +13,89 @@
         {% endwith %}
       </ul>
     </div>
-    {% block messages %}
-    {% endblock %}
+    <div class="col-7 border border-white bg-white rounded align-self-end h-100">
+      <div id="messages" style="overflow-y: scroll; height: calc(100% - 53px);">
+        {% for message in messages %}
+          <span class="font-weight-bold">{{ message.author }}:</span> {{ message.text }}<br>
+        {% endfor %}
+      </div>
+      <form id="message" autocomplete="off">
+        <div class="input-group mb-sm-3">
+          <input id="text" type="text" class="form-control">
+          <span class="input-group-btn">
+            <button type="submit" id="send" class="btn btn-primary">Send</button>
+          </span>
+        </div>
+      </form>
+    </div>
+    <div class="col">
+      <div class="card text-white bg-success">
+        <div class="card-header">Bot</div>
+        <div class="card-body">
+          {% if conversation.bot %}
+            <h4 class="card-title">{{ conversation.bot }}</h4>
+            <p class="card-text">{{ conversation.bot.description }}</p>
+          {% endif %}
+          <form action="{% url 'messaging:conversation-bot' conversation_id=conversation.id %}" method="GET">
+            <div class="input-group">
+              <select name="bot_id" class="form-control mr-sm-2">
+                <option selected>Select a bot</option>
+                {% for bot in bots %}
+                  <option value="{{ bot.id }}">{{ bot }}</option>
+                {% endfor %}
+                <option value="none">None</option>
+              </select>
+              <button class="btn btn-outline-light" type="submit">Summon</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="card mt-sm-3">
+        <div class="card-header">People</div>
+        <ul class="list-group list-group-flush">
+          {% for user in conversation.users.all %}
+            <li class="list-group-item">{{ user }}</li>
+          {% endfor %}
+        </ul>
+        <div class="card-body">
+          <form action="{% url 'messaging:conversation-add-user' conversation_id=conversation.id %}" method="GET">
+            <div class="input-group">
+              <select name="user_id" class="form-control mr-sm-2">
+                <option selected>Select a friend</option>
+                {% for user in users %}
+                  <option value="{{ user.id }}">{{ user }}</option>
+                {% endfor %}
+              </select>
+              <button type="submit" class="btn btn-outline-primary">Add</button>
+            </div>
+          </form>
+          <a href="{% url 'messaging:conversation-leave' conversation_id=conversation.id %}" class="btn btn-block btn-outline-danger mt-sm-3">Leave</a>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-{% include 'messaging/conversation/script.html' %}
+<script src="{% static 'channels/js/websocketbridge.js' %}"></script>
+<script>
+  const webSocketBridge = new channels.WebSocketBridge();
+  webSocketBridge.connect('/conversation/{{ conversation.id }}/');
 
+  webSocketBridge.listen(function(action, stream) {
+    var messages = document.getElementById("messages");
+    messages.innerHTML += "<b>" + action["author"] + ":</b> " +  action["text"] + "<br>";
+    messages.scrollTop = messages.scrollHeight;
+  });
+
+  document.getElementById("message").addEventListener("submit", function() {
+    var text = document.getElementById("text").value
+    webSocketBridge.send({text: text});
+  });
+
+  window.addEventListener("load", function(){
+    var messages = document.getElementById("messages");
+    messages.scrollTop = messages.scrollHeight;
+    document.getElementById("text").focus();
+  });
+</script>
 {% endblock %}

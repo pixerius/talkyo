@@ -10,7 +10,7 @@ urlpatterns = [
         name='login'),
 
     url(r'^logout/$',
-        auth_views.LogoutView.as_view(),
+        auth_views.logout_then_login,
         name='logout'),
 
     url(r'^friend/(?P<user_id>\d+)/$',

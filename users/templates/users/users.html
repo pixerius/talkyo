@@ -7,21 +7,26 @@
       Search results for <b>{{ request.GET.query }}</b>
     </div>
   {% endif %}
-  <div class="card-columns mt-sm-3">
-    {% for user in users %}
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">{{ user }}</h4>
-          <h6 class="card-subtitle mb-2 text-muted">{{ user.email }}</h6>
-          <a href="{% url 'messaging:user-conversation-start' user_id=user.id %}" class="card-link">Start conversation</a>
-          {% if user in request.user.friends.all %}
-            <a href="{% url 'users:friend'  user_id=user.id %}" class="card-link text-danger">Remove friend</a>
-          {% else %}
-            <a href="{% url 'users:friend' user_id=user.id %}" class="card-link text-success">Add friend</a>
-          {% endif %}
+  {% if 'query' not in request.GET and not users %}
+    <div class="alert alert-light mt-sm-3" role="alert">
+      Your have no friends. Search for someone!
+    </div>
+  {% else %}
+    <div class="card-columns mt-sm-3">
+      {% for user in users %}
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">{{ user }}</h4>
+            <a href="{% url 'messaging:user-conversation-start' user_id=user.id %}" class="card-link">Start a conversation</a>
+            {% if user in request.user.friends.all %}
+              <a href="{% url 'users:friend'  user_id=user.id %}" class="card-link text-danger">Remove friend</a>
+            {% else %}
+              <a href="{% url 'users:friend' user_id=user.id %}" class="card-link text-success">Add friend</a>
+            {% endif %}
+          </div>
         </div>
-      </div>
-    {% endfor %}
-  </div>
+      {% endfor %}
+    </div>
+  {% endif %}
 </div>
 {% endblock %}

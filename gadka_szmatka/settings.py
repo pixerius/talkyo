@@ -113,3 +113,5 @@ CHANNEL_LAYERS = {
         'ROUTING': 'gadka_szmatka.routing.channel_routing',
     },
 }
+
+LOGIN_URL = '/users/login/'

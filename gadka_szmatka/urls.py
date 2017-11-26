@@ -15,10 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.views.generic import RedirectView
+from django.urls import reverse_lazy
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^users/', include('users.urls', namespace='users')),
     url(r'^bots/', include('bots.urls', namespace='bots')),
     url(r'^', include('messaging.urls', namespace='messaging')),
+    url(r'^', RedirectView.as_view(url=reverse_lazy('messaging:conversations-list')), name='start'),
 ]

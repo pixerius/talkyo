@@ -77,13 +77,24 @@
 
 <script src="{% static 'channels/js/websocketbridge.js' %}"></script>
 <script>
+  Notification.requestPermission();
   const webSocketBridge = new channels.WebSocketBridge();
   webSocketBridge.connect('/conversation/{{ conversation.id }}/');
 
   webSocketBridge.listen(function(action, stream) {
+    var author = action["author"]
+    var text = action["text"]
     var messages = document.getElementById("messages");
-    messages.innerHTML += "<b>" + action["author"] + ":</b> " +  action["text"] + "<br>";
+    messages.innerHTML += "<b>" + author + ":</b> " +  text + "<br>";
     messages.scrollTop = messages.scrollHeight;
+    if (author != "{{ request.user }}" && !document.hasFocus()) {
+      var notification = new Notification(action["text"]);
+      notification.onclick = function(){
+          window.focus();
+          this.cancel();
+      };
+      setTimeout(notification.close.bind(notification), 5000);
+    }
   });
 
   document.getElementById("message").addEventListener("submit", function() {

@@ -108,18 +108,14 @@ class ConversationBotView(LoginRequiredMixin, View):
 
         bot_id = request.GET.get('bot_id')
 
-        if bot_id == 'none':
-            conversation.bot = None
-
         try:
             bot = get_object_or_404(Bot, id=bot_id)
             conversation.bot = bot
+            conversation.save()
 
             send_message(conversation_id, bot.greeting, bot=bot)
 
         except ValueError:
             pass
-
-        conversation.save()
 
         return redirect(conversation)

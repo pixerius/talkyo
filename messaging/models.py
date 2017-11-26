@@ -20,8 +20,14 @@ class Message(models.Model):
         default_related_name = 'messages'
         ordering = ['timestamp']
 
-    author = models.ForeignKey('users.User', models.CASCADE,
-                               related_name='messages')
+    user = models.ForeignKey('users.User', models.CASCADE,
+                             related_name='messages', null=True, blank=True)
+    bot = models.ForeignKey('bots.Bot', models.CASCADE,
+                            related_name='messages', null=True, blank=True)
     conversation = models.ForeignKey('Conversation', models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     text = models.TextField()
+
+    @property
+    def author(self):
+        return str(self.user or self.bot)

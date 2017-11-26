@@ -1,9 +1,8 @@
-import json
-
 from channels.generic.websockets import JsonWebsocketConsumer
 from channels import Group
 
-from .models import Conversation, Message
+from .models import Conversation
+from .utils import send_message
 
 
 class ConversationConsumer(JsonWebsocketConsumer):
@@ -36,16 +35,7 @@ class ConversationConsumer(JsonWebsocketConsumer):
         if 'text' not in content:
             return
 
-        message = Message.objects.create(
-            author=self.message.user,
-            conversation_id=conversation_id,
-            text=content['text'],
-        )
-
-        Group(f'conversation_{conversation_id}').send({
-            'text': json.dumps({'text': message.text,
-                                'author': str(message.author)})
-        })
+        send_message(conversation_id, content['text'], user=self.message.user)
 
     def disconnect(self, message, **kwargs):
         conversation_id = kwargs['id']

@@ -15,7 +15,7 @@ class UserListView(LoginRequiredMixin, ListView):
         queryset = super().get_queryset().exclude(id=self.request.user.id)
         query = self.request.GET.get('query')
 
-        if query:
+        if query is not None:
             return queryset.filter(name__icontains=query)
 
         return queryset.filter(friends=self.request.user)

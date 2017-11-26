@@ -33,17 +33,17 @@ class ConversationConsumer(JsonWebsocketConsumer):
     def receive(self, content, **kwargs):
         conversation_id = kwargs['id']
 
-        if 'message' not in content:
+        if 'text' not in content:
             return
 
         message = Message.objects.create(
             author=self.message.user,
             conversation_id=conversation_id,
-            text=content['message'],
+            text=content['text'],
         )
 
         Group(f'conversation_{conversation_id}').send({
-            'text': json.dumps({'message': message.text,
+            'text': json.dumps({'text': message.text,
                                 'author': str(message.author)})
         })
 

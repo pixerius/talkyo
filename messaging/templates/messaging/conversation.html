@@ -1,33 +1,36 @@
 {% extends 'gadka_szmatka/base.html' %}
-{% load static %}
+{% load conversation_entry %}
 
 {% block content %}
-
-  <div id="messages">
-    {% for message in messages %}
-      {{ message.text }}<br>
-    {% endfor %}
+<div class="container-fluid bg-light" style="height: calc(100% - 56px);">
+  <div class="row h-100" style="padding-top: 15px;">
+    <div class="col">
+      <ul class="list-group">
+        {% for conversation in request.user.conversations.all %}
+          <a href="{{ conversation.get_absolute_url }}" class="list-group-item list-group-item-action">{% conversation_entry conversation %}</a>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="col-7 border border-white bg-white rounded align-self-end h-100">
+      <div id="messages" style="overflow-y: scroll; height: calc(100% - 53px);">
+        {% for message in messages %}
+          <span class="font-weight-bold">{{ message.author }}:</span> {{ message.text }}<br>
+        {% endfor %}
+      </div>
+      <form id="message" autocomplete="off">
+        <div class="input-group" style="padding-bottom: 15px;">
+          <input id="text" type="text" class="form-control">
+          <span class="input-group-btn">
+            <button type="submit" id="send" class="btn btn-primary">Send</button>
+          </span>
+        </div>
+      </form>
+    </div>
+    <div class="col">
+    </div>
   </div>
+</div>
 
-  <input id="text" type="text">
-  <button id="send">Send</button>
-
-  <script src="{% static 'channels/js/websocketbridge.js' %}"></script>
-  <script>
-
-    const webSocketBridge = new channels.WebSocketBridge();
-    webSocketBridge.connect('/conversation/{{ conversation_id }}/');
-
-    webSocketBridge.listen(function(action, stream) {
-      var messages = document.getElementById("messages");
-      messages.innerHTML += action["message"] + "<br>";
-    });
-
-    document.getElementById("send").addEventListener("click", function() {
-      var message = document.getElementById("text").value
-      webSocketBridge.send({message: message});
-    });
-
-  </script>
+{% include 'messaging/conversation/script.html' %}
 
 {% endblock %}

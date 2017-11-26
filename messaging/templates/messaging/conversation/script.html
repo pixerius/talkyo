@@ -4,7 +4,7 @@
 <script>
 
   const webSocketBridge = new channels.WebSocketBridge();
-  webSocketBridge.connect('/conversation/{{ conversation_id }}/');
+  webSocketBridge.connect('/conversation/{{ conversation.id }}/');
 
   webSocketBridge.listen(function(action, stream) {
     var messages = document.getElementById("messages");

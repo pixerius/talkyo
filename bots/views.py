@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from django.views.generic.list import ListView
 
-# Create your views here.
+from .models import Bot
+
+
+class BotListView(ListView):
+    model = Bot
+    template_name = 'bots/bots.html'
+    context_object_name = 'bots'

@@ -18,6 +18,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('users.urls', namespace='users')),
+    url(r'^users/', include('users.urls', namespace='users')),
+    url(r'^bots/', include('bots.urls', namespace='bots')),
     url(r'^', include('messaging.urls', namespace='messaging')),
 ]

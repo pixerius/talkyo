@@ -1,4 +1,6 @@
 from django.conf.urls import url, include
+from django.views.generic import TemplateView
+
 from . import views
 
 
@@ -17,9 +19,25 @@ urlpatterns = [
 
         ])),
 
-        url(r'^(?P<id>\d+)/$',
-            views.ConversationView.as_view(),
-            name='conversation'),
+        url(r'^(?P<conversation_id>\d+)/', include([
+
+            url(r'^add/$',
+                views.ConversationAddUserView.as_view(),
+                name='conversation-add-user'),
+
+            url(r'^leave/$',
+                views.ConversationLeaveView.as_view(),
+                name='conversation-leave'),
+
+            url(r'^$',
+                views.ConversationView.as_view(),
+                name='conversation'),
+
+        ])),
+
+        url(r'^$',
+            TemplateView.as_view(template_name='messaging/conversation.html'),
+            name='conversation-list'),
 
     ]))
 

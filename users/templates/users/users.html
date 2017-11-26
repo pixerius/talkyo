@@ -1,0 +1,30 @@
+{% extends 'gadka_szmatka/base.html' %}
+
+{% block content %}
+<div class="container">
+  <ul class="nav nav-pills justify-content-center mt-sm-3">
+    <li class="nav-item">
+      <a class="nav-link {% if friends %}active{% endif %}" href="{% url 'users:list' %}?friends=true">Friends</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if not friends %}active{% endif %}" href="{% url 'users:list' %}">All</a>
+    </li>
+  </ul>
+  <div class="card-columns mt-sm-3">
+    {% for user in users %}
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">{{ user }}</h4>
+          <h6 class="card-subtitle mb-2 text-muted">{{ user.email }}</h6>
+          <a href="{% url 'messaging:user-conversation-start' user_id=user.id %}" class="card-link">Start conversation</a>
+          {% if user in request.user.friends.all %}
+            <a href="{% url 'users:friend'  user_id=user.id %}" class="card-link text-danger">Remove friend</a>
+          {% else %}
+            <a href="{% url 'users:friend' user_id=user.id %}" class="card-link text-success">Add friend</a>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

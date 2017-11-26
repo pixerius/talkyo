@@ -11,7 +11,8 @@ class Conversation(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def get_absolute_url(self):
-        return reverse('messaging:conversation', kwargs={'id': self.id})
+        return reverse('messaging:conversation',
+                       kwargs={'conversation_id': self.id})
 
 
 class Message(models.Model):

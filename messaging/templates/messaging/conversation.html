@@ -2,8 +2,8 @@
 {% load conversation_entry %}
 
 {% block content %}
-<div class="container-fluid bg-light" style="height: calc(100% - 56px);">
-  <div class="row h-100" style="padding-top: 15px;">
+<div class="container-fluid" style="height: calc(100% - 56px);">
+  <div class="row h-100 pt-sm-3">
     <div class="col">
       <ul class="list-group">
         {% for conversation in request.user.conversations.all %}
@@ -11,23 +11,8 @@
         {% endfor %}
       </ul>
     </div>
-    <div class="col-7 border border-white bg-white rounded align-self-end h-100">
-      <div id="messages" style="overflow-y: scroll; height: calc(100% - 53px);">
-        {% for message in messages %}
-          <span class="font-weight-bold">{{ message.author }}:</span> {{ message.text }}<br>
-        {% endfor %}
-      </div>
-      <form id="message" autocomplete="off">
-        <div class="input-group" style="padding-bottom: 15px;">
-          <input id="text" type="text" class="form-control">
-          <span class="input-group-btn">
-            <button type="submit" id="send" class="btn btn-primary">Send</button>
-          </span>
-        </div>
-      </form>
-    </div>
-    <div class="col">
-    </div>
+    {% block messages %}
+    {% endblock %}
   </div>
 </div>
 

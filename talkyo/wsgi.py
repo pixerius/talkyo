@@ -1,5 +1,5 @@
 """
-WSGI config for gadka_szmatka project.
+WSGI config for talkyo project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gadka_szmatka.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "talkyo.settings")
 
 application = get_wsgi_application()

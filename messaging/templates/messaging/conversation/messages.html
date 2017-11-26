@@ -20,16 +20,19 @@
   <div class="card text-white bg-success">
     <div class="card-header">Bot</div>
     <div class="card-body">
-      <h4 class="card-title">Jarvis</h4>
-      <p class="card-text">Super inteligent and talkative buddy.</p>
-      <form>
+      {% if conversation.bot %}
+        <h4 class="card-title">{{ conversation.bot }}</h4>
+        <p class="card-text">{{ conversation.bot.description }}</p>
+      {% endif %}
+      <form action="{% url 'messaging:conversation-bot' conversation_id=conversation.id %}" method="GET">
         <div class="input-group">
-          <select class="form-control mr-sm-2">
+          <select name="bot_id" class="form-control mr-sm-2">
+            <option selected>Select a bot</option>
             {% for bot in bots %}
-              <option>{{ user }}</option>
+              <option value="{{ bot.id }}">{{ bot }}</option>
             {% endfor %}
           </select>
-          <button class="btn btn-outline-light" type="button">Switch</button>
+          <button class="btn btn-outline-light" type="submit">Summon</button>
         </div>
       </form>
     </div>
@@ -45,7 +48,7 @@
       <form action="{% url 'messaging:conversation-add-user' conversation_id=conversation.id %}" method="GET">
         <div class="input-group">
           <select name="user_id" class="form-control mr-sm-2">
-            <option selected>Select a friend...</option>
+            <option selected>Select a friend</option>
             {% for user in users %}
               <option value="{{ user.id }}">{{ user }}</option>
             {% endfor %}

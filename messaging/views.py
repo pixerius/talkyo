@@ -1,7 +1,6 @@
 from django.views.generic.list import ListView, View
 from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.urls import reverse
 
@@ -10,8 +9,7 @@ from bots.models import Bot
 from .models import Conversation, Message
 
 
-@method_decorator(login_required, name='dispatch')
-class ConversationView(ListView):
+class ConversationView(LoginRequiredMixin, ListView):
     model = Message
     template_name = 'messaging/conversation/messages.html'
     context_object_name = 'messages'
@@ -35,14 +33,19 @@ class ConversationView(ListView):
         ).exclude(
             id__in=self.conversation.users.all()
         )
+
+        if self.conversation.bot:
+            context['bots'] = Bot.objects.exclude(id=self.conversation.bot.id)
+        else:
+            context['bots'] = Bot.objects.all()
+
         return context
 
 
-@method_decorator(login_required, name='dispatch')
-class ConversationStartView(View):
+class ConversationStartView(LoginRequiredMixin, View):
     def get(self, request, user_id=None, bot_id=None):
 
-        if request.user.id == int(user_id):
+        if user_id and request.user.id == int(user_id):
             raise Http404()
 
         if user_id:
@@ -53,7 +56,7 @@ class ConversationStartView(View):
             conversation.users.add(user, request.user)
 
         elif bot_id:
-            bot = get_object_or_404(Bot, id=user_id)
+            bot = get_object_or_404(Bot, id=bot_id)
 
             conversation = Conversation(bot=bot)
             conversation.save()
@@ -62,8 +65,7 @@ class ConversationStartView(View):
         return redirect(conversation)
 
 
-@method_decorator(login_required, name='dispatch')
-class ConversationAddUserView(View):
+class ConversationAddUserView(LoginRequiredMixin, View):
     def get(self, request, conversation_id=None):
         conversation = get_object_or_404(Conversation, id=conversation_id)
 
@@ -71,18 +73,44 @@ class ConversationAddUserView(View):
             raise Http404()
 
         user_id = self.request.GET.get('user_id')
-        user = get_object_or_404(User, id=user_id)
+
+        try:
+            user = get_object_or_404(User, id=user_id)
+        except ValueError:
+            return redirect(conversation)
 
         conversation.users.add(user)
 
         return redirect(conversation)
 
 
-@method_decorator(login_required, name='dispatch')
-class ConversationLeaveView(View):
+class ConversationLeaveView(LoginRequiredMixin, View):
     def get(self, request, conversation_id=None):
         conversation = get_object_or_404(Conversation, id=conversation_id)
 
         request.user.conversations.remove(conversation)
 
+        if conversation.users.count() < 2:
+            conversation.delete()
+
         return redirect(reverse('messaging:conversation-list'))
+
+
+class ConversationBotView(LoginRequiredMixin, View):
+    def get(self, request, conversation_id=None):
+        conversation = get_object_or_404(Conversation, id=conversation_id)
+
+        if conversation not in request.user.conversations.all():
+            raise Http404()
+
+        bot_id = request.GET.get('bot_id')
+
+        try:
+            bot = get_object_or_404(Bot, id=bot_id)
+        except ValueError:
+            return redirect(conversation)
+
+        conversation.bot = bot
+        conversation.save()
+
+        return redirect(conversation)

@@ -1,35 +1,27 @@
 from django.views.generic.list import ListView, View
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404
 
 from .models import User
 
 
-@method_decorator(login_required, name='dispatch')
-class UserListView(ListView):
+class UserListView(LoginRequiredMixin, ListView):
     model = User
     template_name = 'users/users.html'
     context_object_name = 'users'
 
     def get_queryset(self):
         queryset = super().get_queryset().exclude(id=self.request.user.id)
-        self.friends = self.request.GET.get('friends')
+        query = self.request.GET.get('query')
 
-        if self.friends:
-            return queryset.filter(friends=self.request.user)
+        if query:
+            return queryset.filter(name__icontains=query)
 
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['friends'] = self.friends
-        return context
+        return queryset.filter(friends=self.request.user)
 
 
-@method_decorator(login_required, name='dispatch')
-class FriendView(View):
+class FriendView(LoginRequiredMixin, View):
     def get(self, request, user_id=None):
         if user_id == request.user.id:
             raise Http404()

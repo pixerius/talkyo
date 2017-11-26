@@ -21,14 +21,24 @@
             <a class="nav-link" href="{% url 'messaging:conversation-list' %}">Conversations <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item {% if 'users' in request.path %}active{% endif %}">
-            <a class="nav-link" href="{% url 'users:list' %}">People</a>
+            <a class="nav-link" href="{% url 'users:list' %}">Friends</a>
           </li>
           <li class="nav-item {% if 'bots' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'bots:list' %}">Bots</a>
           </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ request.user }}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="{% url 'users:logout' %}">Logout</a>
+            </div>
+          </li>
         </ul>
-        <span class="navbar-text mr-sm-3">{{ request.user }}</span>
-        <a href="{% url 'users:logout' %}" class="btn btn-outline-light">Logout</a>
+        <form class="form-inline" action="{% url 'users:list' %}" method="GET">
+          <input class="form-control mr-sm-2" name="query" type="search" placeholder="User name" aria-label="Search">
+          <button class="btn btn-outline-light" type="submit">Search</button>
+        </form>
       </div>
     </nav>
     {% block content %}

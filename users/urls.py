@@ -13,12 +13,12 @@ urlpatterns = [
         auth_views.LogoutView.as_view(),
         name='logout'),
 
-    url(r'^list/$',
-        views.UserListView.as_view(),
-        name='list'),
-
     url(r'^friend/(?P<user_id>\d+)/$',
         views.FriendView.as_view(),
         name='friend'),
-        
+
+    url(r'^friends/$',
+        views.UserListView.as_view(),
+        name='list'),
+
 ]

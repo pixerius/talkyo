@@ -6,9 +6,11 @@
   <div class="row h-100 pt-sm-3">
     <div class="col">
       <ul class="list-group">
-        {% for conversation in request.user.conversations.all %}
-          <a href="{{ conversation.get_absolute_url }}" class="list-group-item list-group-item-action">{% conversation_entry conversation %}</a>
-        {% endfor %}
+        {% with current_conversation=conversation %}
+          {% for conversation in request.user.conversations.all %}
+            <a href="{{ conversation.get_absolute_url }}" class="list-group-item list-group-item-action {% if conversation == current_conversation %}active{% endif %}">{% conversation_entry conversation %}</a>
+          {% endfor %}
+        {% endwith %}
       </ul>
     </div>
     {% block messages %}

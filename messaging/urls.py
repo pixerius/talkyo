@@ -29,6 +29,10 @@ urlpatterns = [
                 views.ConversationLeaveView.as_view(),
                 name='conversation-leave'),
 
+            url(r'^bot/$',
+                views.ConversationBotView.as_view(),
+                name='conversation-bot'),
+
             url(r'^$',
                 views.ConversationView.as_view(),
                 name='conversation'),

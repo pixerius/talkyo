@@ -25,7 +25,7 @@ SECRET_KEY = ')ukjoxk@h3nbts-c-q&6!t!a^&54+_b77kh)=y&^7d-hrx7lk6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['web']
 
 
 # Application definition
@@ -115,3 +115,5 @@ CHANNEL_LAYERS = {
 }
 
 LOGIN_URL = '/users/login/'
+
+STATIC_ROOT = 'static/'

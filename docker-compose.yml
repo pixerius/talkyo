@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:10.1
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:4.0
+
+  web:
+    build: .
+    environment:
+      - DJANGO_SETTINGS_MODULE=talkyo.settings.docker
+    volumes:
+      - .:/usr/src/app
+    command: daphne -b 0.0.0.0 -p 8000 talkyo.asgi:channel_layer
+
+  worker:
+    build: .
+    environment:
+      - DJANGO_SETTINGS_MODULE=talkyo.settings.docker
+    volumes:
+      - .:/usr/src/app
+    command: python manage.py runworker
+
+  nginx:
+    image: nginx:1.13
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - '80:80'
+
+volumes:
+  pgdata:

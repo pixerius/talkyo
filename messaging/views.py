@@ -46,9 +46,6 @@ class ConversationView(LoginRequiredMixin, ListView):
 class ConversationStartView(LoginRequiredMixin, View):
     def get(self, request, user_id=None, bot_id=None):
 
-        if user_id and request.user.id == int(user_id):
-            raise Http404()
-
         if user_id:
             user = get_object_or_404(User, id=user_id)
 

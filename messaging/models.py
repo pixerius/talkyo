@@ -35,7 +35,7 @@ class Message(models.Model):
 
     @property
     def author(self):
-        return str(self.user or self.bot)
+        return self.user or self.bot
 
     def __str__(self):
         return str(self.author) + ': ' + self.text

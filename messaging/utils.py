@@ -20,5 +20,5 @@ def send_message(conversation_id, text, user=None, bot=None):
 
     Group(f'conversation_{conversation_id}').send({
         'text': json.dumps({'text': message.text,
-                            'author': message.author})
+                            'author': str(message.author)})
     })

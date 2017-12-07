@@ -13,7 +13,7 @@
         {% endwith %}
       </ul>
     </div>
-    <div class="col-7 border border-white bg-white rounded align-self-end h-100">
+    <div class="col-7 border bg-white rounded align-self-end mb-sm-3" style="height: calc(100% - 16px);">
       <div id="messages" style="overflow-y: scroll; height: calc(100% - 53px);">
         {% for message in messages %}
           <span class="font-weight-bold">{{ message.author }}:</span> {{ message.text }}<br>

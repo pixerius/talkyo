@@ -13,7 +13,7 @@ class Conversation(models.Model):
                              blank=True)
 
     def get_absolute_url(self):
-        return reverse('messaging:conversation',
+        return reverse('conversations:conversation',
                        kwargs={'conversation_id': self.id})
 
     def __str__(self):

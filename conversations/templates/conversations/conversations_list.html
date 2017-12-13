@@ -12,8 +12,8 @@
             {% if conversation.messages.last %}
               <h6 class="card-subtitle mb-2 text-muted">{{ conversation.messages.last }}</h6>
             {% endif %}
-            <a href="{% url 'messaging:conversation' conversation_id=conversation.id %}" class="card-link">Go to conversation</a>
-            <a href="{% url 'messaging:conversation-leave' conversation_id=conversation.id %}" class="card-link text-danger">Leave</a>
+            <a href="{% url 'conversations:conversation' conversation_id=conversation.id %}" class="card-link">Go to conversation</a>
+            <a href="{% url 'conversations:conversation-leave' conversation_id=conversation.id %}" class="card-link text-danger">Leave</a>
           </div>
         </div>
       {% endfor %}

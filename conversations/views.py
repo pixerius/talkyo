@@ -12,7 +12,7 @@ from .utils import send_message
 
 class ConversationView(LoginRequiredMixin, ListView):
     model = Message
-    template_name = 'messaging/conversation.html'
+    template_name = 'conversations/conversation.html'
     context_object_name = 'messages'
 
     def get_queryset(self):
@@ -93,7 +93,7 @@ class ConversationLeaveView(LoginRequiredMixin, View):
         if conversation.users.count() < 2:
             conversation.delete()
 
-        return redirect(reverse('messaging:conversations-list'))
+        return redirect(reverse('conversations:conversations-list'))
 
 
 class ConversationBotView(LoginRequiredMixin, View):
@@ -108,9 +108,10 @@ class ConversationBotView(LoginRequiredMixin, View):
         try:
             bot = get_object_or_404(Bot, id=bot_id)
             conversation.bot = bot
+            conversation.node = bot.start_node
             conversation.save()
 
-            send_message(conversation_id, bot.greeting, bot=bot)
+            send_message(conversation_id, conversation.node.text, bot=bot)
 
         except ValueError:
             pass

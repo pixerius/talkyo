@@ -36,7 +36,7 @@
             <h4 class="card-title">{{ conversation.bot }}</h4>
             <p class="card-text">{{ conversation.bot.description }}</p>
           {% endif %}
-          <form action="{% url 'messaging:conversation-bot' conversation_id=conversation.id %}" method="GET">
+          <form action="{% url 'conversations:conversation-bot' conversation_id=conversation.id %}" method="GET">
             <div class="input-group">
               <select name="bot_id" class="form-control mr-sm-2">
                 <option selected>Select a bot</option>
@@ -57,7 +57,7 @@
           {% endfor %}
         </ul>
         <div class="card-body">
-          <form action="{% url 'messaging:conversation-add-user' conversation_id=conversation.id %}" method="GET">
+          <form action="{% url 'conversations:conversation-add-user' conversation_id=conversation.id %}" method="GET">
             <div class="input-group">
               <select name="user_id" class="form-control mr-sm-2">
                 <option selected>Select a friend</option>
@@ -68,7 +68,7 @@
               <button type="submit" class="btn btn-outline-primary">Add</button>
             </div>
           </form>
-          <a href="{% url 'messaging:conversation-leave' conversation_id=conversation.id %}" class="btn btn-block btn-outline-danger mt-sm-3">Leave</a>
+          <a href="{% url 'conversations:conversation-leave' conversation_id=conversation.id %}" class="btn btn-block btn-outline-danger mt-sm-3">Leave</a>
         </div>
       </div>
     </div>

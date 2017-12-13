@@ -4,7 +4,6 @@ from django.db import models
 class Bot(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    greeting = models.TextField()
     start_node = models.ForeignKey('Node', models.SET_NULL,
                                    related_name='bots', null=True, blank=True)
 

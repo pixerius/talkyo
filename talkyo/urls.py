@@ -22,6 +22,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^users/', include('users.urls', namespace='users')),
     url(r'^bots/', include('bots.urls', namespace='bots')),
-    url(r'^', include('messaging.urls', namespace='messaging')),
-    url(r'^', RedirectView.as_view(url=reverse_lazy('messaging:conversations-list')), name='start'),
+    url(r'^', include('conversations.urls', namespace='conversations')),
+    url(r'^', RedirectView.as_view(url=reverse_lazy('conversations:conversations-list')), name='start'),
 ]

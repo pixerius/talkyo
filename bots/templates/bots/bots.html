@@ -8,7 +8,7 @@
         <div class="card-body">
           <h4 class="card-title">{{ bot }}</h4>
           <p class="card-text">{{ bot.description }}</p>
-          <a href="{% url 'messaging:bot-conversation-start' bot_id=bot.id %}" class="card-link">Start a conversation</a>
+          <a href="{% url 'conversations:bot-conversation-start' bot_id=bot.id %}" class="card-link">Start a conversation</a>
         </div>
       </div>
     {% endfor %}

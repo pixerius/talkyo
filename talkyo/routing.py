@@ -1,4 +1,4 @@
-from messaging import consumers
+from conversations import consumers
 
 channel_routing = [
     consumers.ConversationConsumer.as_route(

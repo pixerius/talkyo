@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'talkyo',
     'channels',
     'bots',
-    'messaging',
+    'conversations',
     'users',
 ]
 

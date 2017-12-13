@@ -42,7 +42,7 @@ urlpatterns = [
 
         url(r'^$',
             login_required(TemplateView.as_view(
-                template_name='messaging/conversations_list.html')
+                template_name='conversations/conversations_list.html')
             ),
             name='conversations-list'),
 

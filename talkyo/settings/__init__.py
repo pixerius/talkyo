@@ -117,3 +117,6 @@ CHANNEL_LAYERS = {
 LOGIN_URL = '/users/login/'
 
 STATIC_ROOT = 'static/'
+
+SIMILARITY_THRESHOLD = 0.7
+LANGUAGE_MODEL = 'en'

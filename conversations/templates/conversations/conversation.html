@@ -97,7 +97,8 @@
     }
   });
 
-  document.getElementById("message").addEventListener("submit", function() {
+  document.getElementById("message").addEventListener("submit", function(event) {
+    event.preventDefault();
     var text = document.getElementById("text").value
     webSocketBridge.send({text: text});
   });

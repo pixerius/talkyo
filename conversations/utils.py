@@ -27,7 +27,7 @@ def send_message(conversation_id, text, user=None, bot=None):
 
     _send_to_group(conversation_id, message.text, message.author)
 
-    if conversation.bot and conversation.node:
+    if conversation.bot and conversation.node and bot is None:
         next_node = conversation.node.get_next_node(text)
 
         if next_node:
@@ -37,4 +37,7 @@ def send_message(conversation_id, text, user=None, bot=None):
                 text=next_node.text,
             )
 
-        _send_to_group(conversation_id, bot_message.text, bot_message.author)
+            conversation.node = next_node
+            conversation.save()
+
+            _send_to_group(conversation_id, bot_message.text, bot_message.author)

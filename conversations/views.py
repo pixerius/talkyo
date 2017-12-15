@@ -56,11 +56,11 @@ class ConversationStartView(LoginRequiredMixin, View):
         elif bot_id:
             bot = get_object_or_404(Bot, id=bot_id)
 
-            conversation = Conversation(bot=bot)
+            conversation = Conversation(bot=bot, node=bot.start_node)
             conversation.save()
             conversation.users.add(request.user)
 
-            send_message(conversation.id, bot.greeting, bot=bot)
+            send_message(conversation.id, conversation.node.text, bot=bot)
 
         return redirect(conversation)
 

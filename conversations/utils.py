@@ -1,15 +1,4 @@
-import json
-
-from channels import Group
-
 from .models import Conversation, Message
-
-
-def _send_to_group(conversation_id, text, author):
-    Group(f'conversation_{conversation_id}').send({
-        'text': json.dumps({'text': text,
-                            'author': str(author)})
-    })
 
 
 def send_message(conversation_id, text, user=None, bot=None):
@@ -24,20 +13,19 @@ def send_message(conversation_id, text, user=None, bot=None):
         conversation_id=conversation_id,
         text=text,
     )
-
-    _send_to_group(conversation_id, message.text, message.author)
+    message.send()
 
     if conversation.bot and conversation.node and bot is None:
-        next_node = conversation.node.get_next_node(text)
+        next_node, answer = conversation.node.get_next_node_and_answer(text)
 
         if next_node:
             bot_message = Message.objects.create(
                 bot=conversation.bot,
                 conversation_id=conversation_id,
-                text=next_node.text,
+                text=answer,
             )
 
             conversation.node = next_node
             conversation.save()
 
-            _send_to_group(conversation_id, bot_message.text, bot_message.author)
+            bot_message.send()

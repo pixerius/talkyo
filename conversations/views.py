@@ -7,7 +7,6 @@ from django.urls import reverse
 from users.models import User
 from bots.models import Bot
 from .models import Conversation, Message
-from .utils import send_message
 
 
 class ConversationView(LoginRequiredMixin, ListView):
@@ -45,22 +44,17 @@ class ConversationView(LoginRequiredMixin, ListView):
 
 class ConversationStartView(LoginRequiredMixin, View):
     def get(self, request, user_id=None, bot_id=None):
+        conversation = Conversation()
+        conversation.save()
 
         if user_id:
             user = get_object_or_404(User, id=user_id)
-
-            conversation = Conversation()
-            conversation.save()
             conversation.users.add(user, request.user)
 
         elif bot_id:
             bot = get_object_or_404(Bot, id=bot_id)
-
-            conversation = Conversation(bot=bot, node=bot.start_node)
-            conversation.save()
             conversation.users.add(request.user)
-
-            send_message(conversation.id, conversation.node.text, bot=bot)
+            conversation.set_bot(bot)
 
         return redirect(conversation)
 
@@ -107,11 +101,7 @@ class ConversationBotView(LoginRequiredMixin, View):
 
         try:
             bot = get_object_or_404(Bot, id=bot_id)
-            conversation.bot = bot
-            conversation.node = bot.start_node
-            conversation.save()
-
-            send_message(conversation_id, conversation.node.text, bot=bot)
+            conversation.set_bot(bot)
 
         except ValueError:
             pass

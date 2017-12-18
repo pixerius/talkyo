@@ -1,3 +1,6 @@
+import json
+
+from channels import Group
 from django.db import models
 from django.urls import reverse
 
@@ -19,6 +22,13 @@ class Conversation(models.Model):
     def __str__(self):
         return ', '.join(str(user) for user in self.users.all())
 
+    def set_bot(self, bot):
+        from .utils import send_message
+        self.bot = bot
+        self.node = bot.start_node
+        self.save()
+        send_message(self.id, self.node.text, bot=bot)
+
 
 class Message(models.Model):
     class Meta:
@@ -39,3 +49,9 @@ class Message(models.Model):
 
     def __str__(self):
         return str(self.author) + ': ' + self.text
+
+    def send(self):
+        Group(f'conversation_{self.conversation_id}').send({
+              'text': json.dumps({'text': self.text,
+                                  'author': str(self.author)})
+        })

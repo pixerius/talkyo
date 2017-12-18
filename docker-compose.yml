@@ -11,6 +11,7 @@ services:
 
   web:
     build: .
+    image: pixerius/talkyo:latest
     environment:
       - DJANGO_SETTINGS_MODULE=talkyo.settings.docker
     volumes:
@@ -19,6 +20,7 @@ services:
 
   worker:
     build: .
+    image: pixerius/talkyo:latest
     environment:
       - DJANGO_SETTINGS_MODULE=talkyo.settings.docker
     volumes:

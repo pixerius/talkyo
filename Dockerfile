@@ -4,6 +4,7 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 RUN pip install spacy
+RUN python -m spacy download en
 RUN python -m spacy download en_vectors_web_lg
 
 RUN pip install pipenv

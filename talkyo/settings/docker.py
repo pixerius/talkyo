@@ -21,5 +21,3 @@ DATABASES = {
         'PORT': 5432,
     }
 }
-
-LANGUAGE_MODEL = 'en_vectors_web_lg'

@@ -6,7 +6,7 @@ from django.conf import settings
 from .labels import NAMED_ENTITY_LABELS
 
 
-nlp = spacy.load(settings.LANGUAGE_MODEL)
+nlp = spacy.load(settings.SPACY_LANGUAGE_MODEL)
 
 
 class Bot(models.Model):
@@ -55,7 +55,7 @@ class Node(models.Model):
                 nlp_sentence = nlp(sentence.text)
                 similarity = nlp_sentence.similarity(nlp_text)
 
-                if similarity > settings.SIMILARITY_THRESHOLD:
+                if similarity > settings.SPACY_SIMILARITY_THRESHOLD:
                     next_node_candidates.append((node, similarity))
 
         if next_node_candidates:

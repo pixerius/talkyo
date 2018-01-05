@@ -27,8 +27,6 @@ class ConversationConsumer(JsonWebsocketConsumer):
 
         Group(f'conversation_{conversation_id}').add(message.reply_channel)
 
-        message.channel_session['conversation_id'] = conversation_id
-
     def receive(self, content, **kwargs):
         conversation_id = kwargs['id']
 
